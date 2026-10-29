@@ -33,7 +33,8 @@ export function useNoteDrag(id: NoteId, noteRef: RefObject<HTMLElement | null>) 
 
   const onPointerDown = (e: PointerEvent<HTMLElement>) => {
     const board = noteRef.current?.parentElement
-    if (e.button !== 0 || !noteRef.current || !board) return
+    // Presses on controls inside the handle (e.g. the color picker) aren't drags.
+    if (e.button !== 0 || e.target !== e.currentTarget || !noteRef.current || !board) return
     // Read from the store directly so the gesture always starts from the latest rect.
     const note = useNotesStore.getState().notes[id]
     gestureRef.current = {

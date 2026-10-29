@@ -1,15 +1,16 @@
 import { create } from 'zustand'
 import type { Point, Rect, Size } from '../types/geometry.ts'
-import type { Note, NoteId } from '../types/note.ts'
+import type { Note, NoteColor, NoteId } from '../types/note.ts'
 
 export interface NotesState {
   // Keyed by id so a single note can be read or replaced without scanning the collection.
   notes: Record<NoteId, Note>
   topZIndex: number
-  addNote: (rect: Rect) => NoteId
+  addNote: (rect: Rect, color: NoteColor) => NoteId
   moveNote: (id: NoteId, position: Point) => void
   resizeNote: (id: NoteId, size: Size) => void
   setText: (id: NoteId, text: string) => void
+  setColor: (id: NoteId, color: NoteColor) => void
   removeNote: (id: NoteId) => Note | undefined
   restoreNote: (note: Note) => void
   bringToFront: (id: NoteId) => void
@@ -18,11 +19,11 @@ export interface NotesState {
 export const useNotesStore = create<NotesState>()((set, get) => ({
   notes: {},
   topZIndex: 0,
-  addNote: (rect) => {
+  addNote: (rect, color) => {
     const id = crypto.randomUUID()
     set((state) => {
       const zIndex = state.topZIndex + 1
-      return { topZIndex: zIndex, notes: { ...state.notes, [id]: { id, ...rect, text: '', zIndex } } }
+      return { topZIndex: zIndex, notes: { ...state.notes, [id]: { id, ...rect, text: '', color, zIndex } } }
     })
     return id
   },
@@ -34,6 +35,9 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
   },
   setText: (id, text) => {
     set((state) => ({ notes: { ...state.notes, [id]: { ...state.notes[id], text } } }))
+  },
+  setColor: (id, color) => {
+    set((state) => ({ notes: { ...state.notes, [id]: { ...state.notes[id], color } } }))
   },
   removeNote: (id) => {
     const { [id]: removed, ...rest } = get().notes

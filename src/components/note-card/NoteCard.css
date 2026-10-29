@@ -20,11 +20,30 @@
 
 .note__handle {
   flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   height: 22px;
+  padding: 0 6px;
   border-radius: 4px 4px 0 0;
   background: rgb(0 0 0 / 0.06);
   cursor: grab;
   touch-action: none;
+}
+
+.note__handle .color-picker {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+/* The picker stays out of the way until the note is hovered or focused. */
+.note:hover .note__handle .color-picker,
+.note:focus-within .note__handle .color-picker {
+  opacity: 1;
+}
+
+.note[data-dragging] .note__handle .color-picker {
+  opacity: 0;
 }
 
 .note[data-dragging] .note__handle {

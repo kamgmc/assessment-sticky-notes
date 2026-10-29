@@ -1,6 +1,7 @@
 import { useRef, type PointerEvent } from 'react'
 import { MIN_NOTE_SIZE } from '../constants.ts'
 import { useNotesStore } from '../store/notes.store.ts'
+import { useUiStore } from '../store/ui.store.ts'
 import type { Point } from '../types/geometry.ts'
 import { isAtLeast, rectFromPoints, toLocalPoint, toRectStyle } from '../utils/geometry.ts'
 
@@ -45,7 +46,9 @@ export function useDrawToCreate() {
     if (previewRef.current) previewRef.current.hidden = true
 
     const rect = rectFromPoints(gesture.start, toLocalPoint(e, gesture.bounds))
-    if (commit && isAtLeast(rect, MIN_NOTE_SIZE)) addNote(rect)
+    if (commit && isAtLeast(rect, MIN_NOTE_SIZE)) {
+      addNote(rect, useUiStore.getState().newNoteColor)
+    }
   }
 
   return {

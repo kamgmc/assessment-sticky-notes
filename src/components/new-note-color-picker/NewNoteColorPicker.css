@@ -1,0 +1,12 @@
+.new-note-color-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 16px;
+  border-left: 1px solid var(--line);
+}
+
+.new-note-color-picker__label {
+  color: var(--ink-muted);
+  font-size: 13px;
+}
