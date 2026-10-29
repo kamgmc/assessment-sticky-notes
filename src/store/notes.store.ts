@@ -8,9 +8,11 @@ export interface NotesState {
   addNote: (rect: Rect) => NoteId
   moveNote: (id: NoteId, position: Point) => void
   resizeNote: (id: NoteId, size: Size) => void
+  removeNote: (id: NoteId) => Note | undefined
+  restoreNote: (note: Note) => void
 }
 
-export const useNotesStore = create<NotesState>()((set) => ({
+export const useNotesStore = create<NotesState>()((set, get) => ({
   notes: {},
   addNote: (rect) => {
     const id = crypto.randomUUID()
@@ -22,5 +24,13 @@ export const useNotesStore = create<NotesState>()((set) => ({
   },
   resizeNote: (id, { width, height }) => {
     set((state) => ({ notes: { ...state.notes, [id]: { ...state.notes[id], width, height } } }))
+  },
+  removeNote: (id) => {
+    const { [id]: removed, ...rest } = get().notes
+    set({ notes: rest })
+    return removed
+  },
+  restoreNote: (note) => {
+    set((state) => ({ notes: { ...state.notes, [note.id]: note } }))
   },
 }))

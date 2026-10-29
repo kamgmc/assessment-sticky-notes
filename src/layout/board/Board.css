@@ -13,6 +13,9 @@
 .board__notes {
   position: absolute;
   inset: 0;
+  /* Own stacking context, so z-indexes inside it can never rise above the trash. */
+  z-index: 0;
+  isolation: isolate;
   /* Pointer events on empty space must reach the board itself; notes opt back in. */
   pointer-events: none;
 }

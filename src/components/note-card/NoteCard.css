@@ -52,3 +52,7 @@
   cursor: nwse-resize;
   touch-action: none;
 }
+
+.note[data-over-trash] {
+  opacity: 0.6;
+}

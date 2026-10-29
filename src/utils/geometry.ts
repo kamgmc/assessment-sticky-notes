@@ -48,3 +48,7 @@ export function toRectStyle(rect: Rect) {
     height: `${height}px`,
   }
 }
+
+export function containsPoint(rect: DOMRect, { x, y }: Point): boolean {
+  return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
+}

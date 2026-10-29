@@ -1,0 +1,57 @@
+.trash {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  /* Above the notes layer so a dragged note can never hide its own drop target. */
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 128px;
+  height: 104px;
+  border: 2px dashed var(--line-strong);
+  border-radius: 16px;
+  background: rgb(255 255 255 / 0.6);
+  color: var(--ink-muted);
+  opacity: 0.55;
+  cursor: default;
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    opacity 160ms ease;
+}
+
+.trash__icon {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trash__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* A note is being dragged: the trash becomes a visible target. */
+.trash[data-armed] {
+  opacity: 1;
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* The pointer is over the trash: releasing will delete the note. */
+.trash[data-active] {
+  transform: scale(1.08);
+  border-style: solid;
+  background: var(--danger);
+  color: #fff;
+}
