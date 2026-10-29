@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Point, Rect } from '../types/geometry.ts'
+import type { Point, Rect, Size } from '../types/geometry.ts'
 import type { Note, NoteId } from '../types/note.ts'
 
 export interface NotesState {
@@ -7,6 +7,7 @@ export interface NotesState {
   notes: Record<NoteId, Note>
   addNote: (rect: Rect) => NoteId
   moveNote: (id: NoteId, position: Point) => void
+  resizeNote: (id: NoteId, size: Size) => void
 }
 
 export const useNotesStore = create<NotesState>()((set) => ({
@@ -18,5 +19,8 @@ export const useNotesStore = create<NotesState>()((set) => ({
   },
   moveNote: (id, { x, y }) => {
     set((state) => ({ notes: { ...state.notes, [id]: { ...state.notes[id], x, y } } }))
+  },
+  resizeNote: (id, { width, height }) => {
+    set((state) => ({ notes: { ...state.notes, [id]: { ...state.notes[id], width, height } } }))
   },
 }))

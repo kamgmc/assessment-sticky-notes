@@ -11,7 +11,8 @@
     0 4px 12px rgb(0 0 0 / 0.08);
 }
 
-.note[data-dragging] {
+.note[data-dragging],
+.note[data-resizing] {
   /* Keeps the dragged note above its siblings until drop. */
   z-index: 1;
   box-shadow:
@@ -30,4 +31,24 @@
 
 .note[data-dragging] .note__handle {
   cursor: grabbing;
+}
+
+.note__resize {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 0 0 4px 0;
+  /* Diagonal grip lines in the corner. */
+  background: linear-gradient(
+    135deg,
+    transparent 45%,
+    rgb(0 0 0 / 0.25) 45% 52%,
+    transparent 52% 65%,
+    rgb(0 0 0 / 0.25) 65% 72%,
+    transparent 72%
+  );
+  cursor: nwse-resize;
+  touch-action: none;
 }
