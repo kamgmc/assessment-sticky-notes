@@ -36,9 +36,14 @@ export function isAtLeast(size: Size, min: Size): boolean {
 }
 
 // Positions with transform rather than top/left so moving an element skips layout.
-export function toRectStyle({ x, y, width, height }: Rect) {
+export function toTransform({ x, y }: Point): string {
+  return `translate(${x}px, ${y}px)`
+}
+
+export function toRectStyle(rect: Rect) {
+  const { width, height } = rect
   return {
-    transform: `translate(${x}px, ${y}px)`,
+    transform: toTransform(rect),
     width: `${width}px`,
     height: `${height}px`,
   }

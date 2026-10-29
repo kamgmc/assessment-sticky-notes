@@ -1,4 +1,5 @@
-import { memo } from 'react'
+import { memo, useRef } from 'react'
+import { useNoteDrag } from '../../hooks/use-note-drag.ts'
 import { useNotesStore } from '../../store/notes.store.ts'
 import type { NoteId } from '../../types/note.ts'
 import { toRectStyle } from '../../utils/geometry.ts'
@@ -11,6 +12,12 @@ interface NoteCardProps {
 // Subscribes to its own note only, so changes to other notes don't re-render it.
 export const NoteCard = memo(function NoteCard({ id }: NoteCardProps) {
   const note = useNotesStore((state) => state.notes[id])
+  const noteRef = useRef<HTMLDivElement>(null)
+  const dragHandlers = useNoteDrag(id, noteRef)
 
-  return <div className="note" style={toRectStyle(note)} />
+  return (
+    <div ref={noteRef} className="note" style={toRectStyle(note)}>
+      <div className="note__handle" title="Drag to move" {...dragHandlers} />
+    </div>
+  )
 })

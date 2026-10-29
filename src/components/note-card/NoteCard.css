@@ -2,9 +2,32 @@
   position: absolute;
   top: 0;
   left: 0;
+  display: flex;
+  flex-direction: column;
   border-radius: 4px;
   background: var(--note-bg);
   box-shadow:
     0 1px 2px rgb(0 0 0 / 0.08),
     0 4px 12px rgb(0 0 0 / 0.08);
+}
+
+.note[data-dragging] {
+  /* Keeps the dragged note above its siblings until drop. */
+  z-index: 1;
+  box-shadow:
+    0 4px 8px rgb(0 0 0 / 0.1),
+    0 16px 32px rgb(0 0 0 / 0.16);
+}
+
+.note__handle {
+  flex: none;
+  height: 22px;
+  border-radius: 4px 4px 0 0;
+  background: rgb(0 0 0 / 0.06);
+  cursor: grab;
+  touch-action: none;
+}
+
+.note[data-dragging] .note__handle {
+  cursor: grabbing;
 }
