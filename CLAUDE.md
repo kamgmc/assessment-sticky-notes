@@ -13,7 +13,14 @@ A single-page sticky notes app built for a take-home task. The full spec is in `
 - Comments in English, only where they really help a reader.
 - The submission also needs a 2–3 paragraph architecture description.
 
-So far there's only the static layout: `App` stacks a `Toolbar` header above a full-height `Board` canvas with a dotted grid. Page-level layout components live in `src/layout/`. Each component gets its own directory named in lowercase kebab-case (e.g. `trash-zone/`), holding `<Name>.tsx` and a matching BEM-style `<Name>.css`, and the design tokens (colors, fonts) are CSS custom properties on `:root` in `src/index.css`.
+## Architecture
+
+- **Layout:** `App` stacks a `Toolbar` header above a full-height `Board` canvas. Page-level layout components live in `src/layout/` and other components in `src/components/`. Each component gets its own directory named in lowercase kebab-case (e.g. `note-card/`), holding `<Name>.tsx` and a matching BEM-style `<Name>.css`. Design tokens (colors, fonts) are CSS custom properties on `:root` in `src/index.css`.
+- **File naming:** hooks use kebab-case file names (`src/hooks/use-draw-to-create.ts`). Stores use kebab-case plus a `.store` suffix (`src/store/notes.store.ts`).
+- **State:** a Zustand store in `src/store/notes.store.ts` keeps notes as `Record<NoteId, Note>`. A `Note` is a `Rect` (`x`, `y`, `width`, `height` in board-relative pixels) plus an `id`. `Board` selects only the list of IDs (with `useShallow`), and each memoized `NoteCard` reads its own note by ID, so changing one note re-renders only that note.
+- **Gestures:** each interaction is its own hook in `src/hooks/` (e.g. `useDrawToCreate`, `useDoubleClickToCreate`). Pointer gestures measure the board once on pointerdown, use pointer capture, and keep in-progress values in refs. Visuals during the gesture are written straight to the DOM. The store is updated only on pointerup, so no React state changes while the pointer moves.
+- **Positioning:** elements are placed with `transform: translate()` (via `toRectStyle` in `src/utils/geometry.ts`), never `top`/`left`. Coordinates are clamped so notes stay inside the board.
+- **Board pointer routing:** the notes layer has `pointer-events: none` (notes opt back in), so a pointer event whose target is the board itself means the user pressed on empty space. Creation hooks rely on that check.
 
 ## Commands
 

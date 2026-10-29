@@ -2,10 +2,38 @@
   position: relative;
   flex: 1;
   overflow: hidden;
+  cursor: crosshair;
+  touch-action: none;
   user-select: none;
   background-color: var(--board);
   background-image: radial-gradient(circle, var(--board-dot) 1px, transparent 1.4px);
   background-size: 24px 24px;
+}
+
+.board__notes {
+  position: absolute;
+  inset: 0;
+  /* Pointer events on empty space must reach the board itself; notes opt back in. */
+  pointer-events: none;
+}
+
+.board__notes > .note {
+  pointer-events: auto;
+  cursor: default;
+}
+
+.board__draw-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 2px dashed var(--danger);
+  border-radius: 4px;
+  background: rgb(220 38 38 / 0.06);
+}
+
+.board__draw-preview[data-valid] {
+  border-color: var(--accent);
+  background: rgb(37 99 235 / 0.08);
 }
 
 .board__message {
