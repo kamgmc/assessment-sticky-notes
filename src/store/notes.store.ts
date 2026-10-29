@@ -9,6 +9,7 @@ export interface NotesState {
   addNote: (rect: Rect) => NoteId
   moveNote: (id: NoteId, position: Point) => void
   resizeNote: (id: NoteId, size: Size) => void
+  setText: (id: NoteId, text: string) => void
   removeNote: (id: NoteId) => Note | undefined
   restoreNote: (note: Note) => void
   bringToFront: (id: NoteId) => void
@@ -21,7 +22,7 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
     const id = crypto.randomUUID()
     set((state) => {
       const zIndex = state.topZIndex + 1
-      return { topZIndex: zIndex, notes: { ...state.notes, [id]: { id, ...rect, zIndex } } }
+      return { topZIndex: zIndex, notes: { ...state.notes, [id]: { id, ...rect, text: '', zIndex } } }
     })
     return id
   },
@@ -30,6 +31,9 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
   },
   resizeNote: (id, { width, height }) => {
     set((state) => ({ notes: { ...state.notes, [id]: { ...state.notes[id], width, height } } }))
+  },
+  setText: (id, text) => {
+    set((state) => ({ notes: { ...state.notes, [id]: { ...state.notes[id], text } } }))
   },
   removeNote: (id) => {
     const { [id]: removed, ...rest } = get().notes
