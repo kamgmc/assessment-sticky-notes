@@ -13,7 +13,7 @@ A single-page sticky notes app built for a take-home task. The full spec is in `
 - Comments in English, only where they really help a reader.
 - The submission also needs a 2–3 paragraph architecture description.
 
-The repo is still the stock Vite template (`src/App.tsx` is the demo counter page), so the app architecture hasn't been built yet.
+So far there's only the static layout: `App` stacks a `Toolbar` header above a full-height `Board` canvas with a dotted grid. Page-level layout components live in `src/layout/`. Each component gets its own directory named in lowercase kebab-case (e.g. `trash-zone/`), holding `<Name>.tsx` and a matching BEM-style `<Name>.css`, and the design tokens (colors, fonts) are CSS custom properties on `:root` in `src/index.css`.
 
 ## Commands
 
