@@ -37,7 +37,11 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
     set((state) => ({ notes: { ...state.notes, [id]: { ...state.notes[id], width, height } } }))
   },
   setText: (id, text) => {
-    set((state) => ({ notes: { ...state.notes, [id]: { ...state.notes[id], text } } }))
+    set((state) => {
+      // A pending text commit can arrive after its note was deleted.
+      if (!(id in state.notes)) return state
+      return { notes: { ...state.notes, [id]: { ...state.notes[id], text } } }
+    })
   },
   setColor: (id, color) => {
     set((state) => ({ notes: { ...state.notes, [id]: { ...state.notes[id], color } } }))

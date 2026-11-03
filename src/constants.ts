@@ -10,6 +10,9 @@ export const DEFAULT_NOTE_SIZE: Size = { width: 200, height: 160 }
 // of the smaller of the two, so small notes can trigger it too.
 export const TRASH_OVERLAP_RATIO = 0.5
 
+// How long typing must pause before a note's text is saved to the store.
+export const TEXT_COMMIT_DELAY_MS = 300
+
 // How long a deleted note can be restored from the undo toast.
 export const UNDO_TIMEOUT_MS = 5000
 
