@@ -16,6 +16,7 @@ A single-page sticky notes board built with React 19 and TypeScript. Notes can b
 - **Edit note text** directly in the note.
 - **Bring to front:** pressing a note raises it above overlapping notes.
 - **Colors:** pick the color for new notes in the toolbar, or change a note's color from the swatches in its top bar.
+- **Local persistence:** notes are saved to `localStorage` and restored when the page loads.
 
 ## Getting started
 
@@ -54,7 +55,7 @@ The UI is split into page-level layout components (`Toolbar`, `Board`) and reusa
 
 Every pointer interaction (draw-to-create, double-click-to-create, drag, resize) is its own custom hook in `src/hooks/`, and they all follow the same pattern. On `pointerdown` the hook measures the board once, captures the pointer, and keeps the gesture's working values in a ref. On `pointermove` it writes directly to the element's style, positioning with `transform: translate()` so moves skip layout. On `pointerup` it saves the result to the store in a single update. No React state changes while the pointer moves, which keeps dragging smooth. Coordinates are clamped so notes stay inside the board. The trash zone is shared with the drag hook through a context holding a stable ref, and the hook hit-tests the pointer against the trash's bounds measured when the drag starts. Stacking order is a `zIndex` stored on each note instead of DOM order, so raising a note never moves its element in the middle of a gesture.
 
-Deletion is optimistic. Dropping a note on the trash removes it from the board immediately, with no confirmation dialog, while the undo store keeps it for five seconds so the toast can restore it exactly as it was. Types are strict throughout: geometry is modeled as `Point`, `Size` and `Rect`, a `Note` extends `Rect`, and `NoteColor` is derived from the `NOTE_COLORS` constant, so the list of colors is defined in one place. Styling is plain CSS: design tokens are CSS custom properties, each component has a BEM-style stylesheet, and note colors are applied with `data-color` attributes rather than inline styles.
+Deletion is optimistic. Dropping a note on the trash removes it from the board immediately, with no confirmation dialog, while the undo store keeps it for five seconds so the toast can restore it exactly as it was. Persistence sits in `src/services/notes-storage.ts`, outside the store. The notes store loads its initial notes from it synchronously, so the board never renders empty first. A store subscription then schedules a save whenever the notes change. Saves are debounced, so a burst of keystrokes causes one write, and any pending save is flushed on `pagehide`. Saved data is treated as untrusted: each note is validated field by field on load, and invalid entries are dropped. Types are strict throughout: geometry is modeled as `Point`, `Size` and `Rect`, a `Note` extends `Rect`, and `NoteColor` is derived from the `NOTE_COLORS` constant, so the list of colors is defined in one place. Styling is plain CSS: design tokens are CSS custom properties, each component has a BEM-style stylesheet, and note colors are applied with `data-color` attributes rather than inline styles.
 
 ## Project structure
 
@@ -64,6 +65,7 @@ src/
 ├── context/      # React context for the trash zone ref
 ├── hooks/        # gesture hooks (create, drag, resize)
 ├── layout/       # page-level layout: board, toolbar
+├── services/     # localStorage persistence
 ├── store/        # Zustand stores (notes, ui, undo)
 ├── types/        # geometry and note types
 ├── utils/        # geometry helpers

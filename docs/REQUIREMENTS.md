@@ -27,7 +27,7 @@ The UI for these features should be intuitive and achievable within the time bud
 
 - [ ] **O1. Edit note text**: enter and edit the text of a note.
 - [ ] **O2. Bring to front**: the note being interacted with moves above overlapping notes.
-- [ ] **O3. Local persistence**: save notes to `localStorage` and restore them on page load.
+- [x] **O3. Local persistence**: save notes to `localStorage` and restore them on page load.
 - [ ] **O4. Note colors**: support different note colors.
 - [ ] **O5. REST API persistence**: save notes through a REST API. The API itself may be mocked, but **the mock must be asynchronous**.
 

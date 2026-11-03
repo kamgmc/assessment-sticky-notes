@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { loadNotes, scheduleSave } from '../services/notes-storage.ts'
 import type { Point, Rect, Size } from '../types/geometry.ts'
 import type { Note, NoteColor, NoteId } from '../types/note.ts'
 
@@ -16,9 +17,11 @@ export interface NotesState {
   bringToFront: (id: NoteId) => void
 }
 
+const initialNotes = loadNotes()
+
 export const useNotesStore = create<NotesState>()((set, get) => ({
-  notes: {},
-  topZIndex: 0,
+  notes: initialNotes,
+  topZIndex: Math.max(0, ...Object.values(initialNotes).map((note) => note.zIndex)),
   addNote: (rect, color) => {
     const id = crypto.randomUUID()
     set((state) => {
@@ -56,3 +59,8 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
     })
   },
 }))
+
+// Every action replaces `notes` with a new object, so a reference check detects any change.
+useNotesStore.subscribe((state, prev) => {
+  if (state.notes !== prev.notes) scheduleSave(state.notes)
+})
