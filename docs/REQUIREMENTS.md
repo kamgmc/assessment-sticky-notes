@@ -16,19 +16,19 @@ A single-page web application for creating and arranging sticky notes on a board
 
 ## 2. Core features (implement at least 3 of 4)
 
-- [ ] **F1. Create a note**: create a new note of a specified size at a specified position (e.g. click-and-drag on empty board space to define its rectangle).
-- [ ] **F2. Resize a note**: change a note's size by dragging (e.g. a resize handle).
-- [ ] **F3. Move a note**: change a note's position by dragging.
-- [ ] **F4. Delete a note**: remove a note by dragging it over a predefined "trash" zone.
+- [x] **F1. Create a note**: create a new note of a specified size at a specified position (e.g. click-and-drag on empty board space to define its rectangle).
+- [x] **F2. Resize a note**: change a note's size by dragging (e.g. a resize handle).
+- [x] **F3. Move a note**: change a note's position by dragging.
+- [x] **F4. Delete a note**: remove a note by dragging it over a predefined "trash" zone.
 
 The UI for these features should be intuitive and achievable within the time budget.
 
 ## 3. Optional features (bonus)
 
-- [ ] **O1. Edit note text**: enter and edit the text of a note.
-- [ ] **O2. Bring to front**: the note being interacted with moves above overlapping notes.
+- [x] **O1. Edit note text**: enter and edit the text of a note.
+- [x] **O2. Bring to front**: the note being interacted with moves above overlapping notes.
 - [x] **O3. Local persistence**: save notes to `localStorage` and restore them on page load.
-- [ ] **O4. Note colors**: support different note colors.
+- [x] **O4. Note colors**: support different note colors.
 - [ ] **O5. REST API persistence**: save notes through a REST API. The API itself may be mocked, but **the mock must be asynchronous**.
 
 ## 4. Evaluation criteria
@@ -43,9 +43,9 @@ Reviewers will focus most on:
 
 ## 5. Deliverables
 
-- [ ] Source code of the application.
-- [ ] A short **architecture description** (2–3 paragraphs, in English).
-- [ ] Build and run instructions (§6).
+- [x] Source code of the application.
+- [x] A short **architecture description** (2–3 paragraphs, in English).
+- [x] Build and run instructions (§6).
 
 ## 6. Build and run instructions
 
