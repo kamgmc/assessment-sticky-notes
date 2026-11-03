@@ -1,3 +1,4 @@
+import { TRASH_OVERLAP_RATIO } from '../constants.ts'
 import type { Point, Rect, Size } from '../types/geometry.ts'
 
 export function clamp(value: number, min: number, max: number): number {
@@ -62,4 +63,12 @@ export function intersectionArea(a: Rect, b: Rect): number {
   const width = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x)
   const height = Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y)
   return width > 0 && height > 0 ? width * height : 0
+}
+
+// Over the trash when the pointer is inside it, or when the note and the trash
+// overlap by enough of the smaller one's area.
+export function isOverTrash(note: Rect, pointer: Point, trash: Rect): boolean {
+  if (containsPoint(trash, pointer)) return true
+  const overlap = intersectionArea(note, trash)
+  return overlap > 0 && overlap >= Math.min(area(note), area(trash)) * TRASH_OVERLAP_RATIO
 }

@@ -33,6 +33,8 @@ Other scripts:
 pnpm build       # type-check (tsc -b) and build for production into dist/
 pnpm preview     # serve the production build locally
 pnpm lint        # lint with oxlint
+pnpm test        # run the tests once (Vitest)
+pnpm test:watch  # re-run tests on change
 ```
 
 The app is built for desktop browsers (latest Chrome, Firefox and Edge) at a resolution of 1024×768 or larger.
@@ -68,7 +70,7 @@ src/
 ├── services/     # localStorage persistence
 ├── store/        # Zustand stores (notes, ui, undo)
 ├── types/        # geometry and note types
-├── utils/        # geometry helpers
+├── utils/        # geometry, debounce, localStorage and note parsing helpers
 ├── constants.ts  # sizes, colors, timings
 └── main.tsx      # entry point
 ```

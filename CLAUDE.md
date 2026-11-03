@@ -35,9 +35,12 @@ pnpm dev       # Vite dev server with HMR
 pnpm build     # tsc -b (type-check via project references) then vite build → dist/
 pnpm lint      # oxlint (not ESLint)
 pnpm preview   # serve dist/
+pnpm test      # Vitest, single run
+pnpm test:watch
+pnpm test src/utils/geometry.test.ts   # one file
 ```
 
-There's no test runner yet.
+Tests use Vitest with jsdom (configured in `vite.config.ts`) and React Testing Library. They sit next to the code as `*.test.ts(x)` and import `describe`/`it`/`expect` from `vitest` explicitly (no globals), so component tests call `cleanup` in `afterEach`. Stores are module singletons: reset them with `setState` in `beforeEach`, and use `vi.resetModules()` plus a dynamic import to test loading from localStorage. jsdom has no layout, so drag and resize gestures aren't tested; their logic lives in pure helpers (e.g. `isOverTrash` in `src/utils/geometry.ts`) that are.
 
 ## Tooling notes
 

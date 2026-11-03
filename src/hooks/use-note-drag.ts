@@ -1,11 +1,10 @@
 import { useRef, type PointerEvent, type RefObject } from 'react'
-import { TRASH_OVERLAP_RATIO } from '../constants.ts'
 import { useTrashZoneRef } from '../context/trash-zone.context.ts'
 import { useNotesStore } from '../store/notes.store.ts'
 import { useUndoStore } from '../store/undo.store.ts'
 import type { Point, Rect, Size } from '../types/geometry.ts'
 import type { NoteId } from '../types/note.ts'
-import { area, clamp, containsPoint, intersectionArea, toTransform } from '../utils/geometry.ts'
+import { clamp, isOverTrash, toTransform } from '../utils/geometry.ts'
 
 interface DragGesture {
   pointerStart: Point
@@ -17,14 +16,6 @@ interface DragGesture {
   trashRect: Rect | null
   position: Point
   overTrash: boolean
-}
-
-// Over the trash when the pointer is inside it, or when the note and the trash
-// overlap by enough of the smaller one's area.
-function isOverTrash(note: Rect, pointer: Point, trash: Rect): boolean {
-  if (containsPoint(trash, pointer)) return true
-  const overlap = intersectionArea(note, trash)
-  return overlap > 0 && overlap >= Math.min(area(note), area(trash)) * TRASH_OVERLAP_RATIO
 }
 
 // Move a note by dragging its handle; releasing over the trash deletes it.

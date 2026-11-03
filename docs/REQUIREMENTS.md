@@ -57,4 +57,5 @@ pnpm dev         # start dev server
 pnpm build       # type-check and produce production build in dist/
 pnpm preview     # serve the production build locally
 pnpm lint        # run oxlint
+pnpm test        # run the tests once (Vitest)
 ```
