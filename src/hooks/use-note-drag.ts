@@ -1,19 +1,30 @@
 import { useRef, type PointerEvent, type RefObject } from 'react'
+import { TRASH_OVERLAP_RATIO } from '../constants.ts'
 import { useTrashZoneRef } from '../context/trash-zone.context.ts'
 import { useNotesStore } from '../store/notes.store.ts'
 import { useUndoStore } from '../store/undo.store.ts'
 import type { Point, Rect, Size } from '../types/geometry.ts'
 import type { NoteId } from '../types/note.ts'
-import { clamp, containsPoint, toTransform } from '../utils/geometry.ts'
+import { area, clamp, containsPoint, intersectionArea, toTransform } from '../utils/geometry.ts'
 
 interface DragGesture {
   pointerStart: Point
   noteStart: Rect
   // Measured once on pointerdown so pointermove never reads layout.
   bounds: Size
-  trashBounds: DOMRect | null
+  boardOrigin: Point
+  // In board coordinates, like the note's position.
+  trashRect: Rect | null
   position: Point
   overTrash: boolean
+}
+
+// Over the trash when the pointer is inside it, or when the note and the trash
+// overlap by enough of the smaller one's area.
+function isOverTrash(note: Rect, pointer: Point, trash: Rect): boolean {
+  if (containsPoint(trash, pointer)) return true
+  const overlap = intersectionArea(note, trash)
+  return overlap > 0 && overlap >= Math.min(area(note), area(trash)) * TRASH_OVERLAP_RATIO
 }
 
 // Move a note by dragging its handle; releasing over the trash deletes it.
@@ -37,11 +48,21 @@ export function useNoteDrag(id: NoteId, noteRef: RefObject<HTMLElement | null>) 
     if (e.button !== 0 || e.target !== e.currentTarget || !noteRef.current || !board) return
     // Read from the store directly so the gesture always starts from the latest rect.
     const note = useNotesStore.getState().notes[id]
+    const boardBounds = board.getBoundingClientRect()
+    const trashBounds = trashRef.current?.getBoundingClientRect()
     gestureRef.current = {
       pointerStart: { x: e.clientX, y: e.clientY },
       noteStart: note,
       bounds: { width: board.clientWidth, height: board.clientHeight },
-      trashBounds: trashRef.current?.getBoundingClientRect() ?? null,
+      boardOrigin: { x: boardBounds.left, y: boardBounds.top },
+      trashRect: trashBounds
+        ? {
+            x: trashBounds.left - boardBounds.left,
+            y: trashBounds.top - boardBounds.top,
+            width: trashBounds.width,
+            height: trashBounds.height,
+          }
+        : null,
       position: { x: note.x, y: note.y },
       overTrash: false,
     }
@@ -54,15 +75,16 @@ export function useNoteDrag(id: NoteId, noteRef: RefObject<HTMLElement | null>) 
     const gesture = gestureRef.current
     if (!gesture || !noteRef.current) return
 
-    const { pointerStart, noteStart, bounds, trashBounds } = gesture
+    const { pointerStart, noteStart, bounds, boardOrigin, trashRect } = gesture
     gesture.position = {
       x: clamp(noteStart.x + e.clientX - pointerStart.x, 0, bounds.width - noteStart.width),
       y: clamp(noteStart.y + e.clientY - pointerStart.y, 0, bounds.height - noteStart.height),
     }
     noteRef.current.style.transform = toTransform(gesture.position)
-    // Hit-test the pointer, not the note, so the drop target matches where the user aims.
-    const pointer = { x: e.clientX, y: e.clientY }
-    setOverTrash(gesture, trashBounds !== null && containsPoint(trashBounds, pointer))
+
+    const noteRect = { ...gesture.position, width: noteStart.width, height: noteStart.height }
+    const pointer = { x: e.clientX - boardOrigin.x, y: e.clientY - boardOrigin.y }
+    setOverTrash(gesture, trashRect !== null && isOverTrash(noteRect, pointer, trashRect))
   }
 
   const endGesture = (e: PointerEvent<HTMLElement>, commit: boolean) => {

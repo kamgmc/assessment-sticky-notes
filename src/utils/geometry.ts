@@ -49,6 +49,17 @@ export function toRectStyle(rect: Rect) {
   }
 }
 
-export function containsPoint(rect: DOMRect, { x, y }: Point): boolean {
-  return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
+export function containsPoint(rect: Rect, { x, y }: Point): boolean {
+  return x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height
+}
+
+export function area({ width, height }: Size): number {
+  return width * height
+}
+
+// Area shared by two rects, or 0 when they don't overlap.
+export function intersectionArea(a: Rect, b: Rect): number {
+  const width = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x)
+  const height = Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y)
+  return width > 0 && height > 0 ? width * height : 0
 }
